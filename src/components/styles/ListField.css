@@ -1,0 +1,34 @@
+  .col-md-2 {
+    padding: 5px;
+    margin: 15px 0;
+  }
+  
+  .col-md-2 label,
+  .col-md-4 label {
+    color: #00000069;
+    text-align: right;
+  }
+  
+  .col-md-9 {
+    text-align: left;
+    padding: 5px 15px;
+    margin: 15px 0;
+  }
+  
+  #captionRight {
+    text-align: right;
+  }
+  
+  caption {
+    caption-side: top;
+  }
+  
+  caption div {
+    float: left;
+    width: 50%;
+  }
+  
+  #actions {
+    float: right;
+  }
+  

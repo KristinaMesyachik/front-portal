@@ -1,0 +1,20 @@
+.myBtn {
+  padding: 5px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  background:transparent;
+}
+
+.whiteBtn {
+  color: black;
+  background: rgb(241, 239, 239);
+  border: 1px solid rgb(241, 239, 239);
+}
+
+.blueBtn {
+  color: white;
+  background: #0086fdc7;
+  border: 1px solid #0086fdc7;
+}

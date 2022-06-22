@@ -8,6 +8,10 @@ class FieldService {
         return axios.get(FIELD_API_BASE_URL + '/', {params});
     }
 
+    getFieldsIsActive() {
+        return axios.get(FIELD_API_BASE_URL + '/active/');
+    }
+
     createField(field) {
         return axios.post(FIELD_API_BASE_URL + '/', field);
     }

@@ -11,23 +11,31 @@ import style3 from '../components/styles/MyLabel.css'
 import style4 from '../components/styles/MySelect.css'
 import style5 from '../components/styles/MyTextarea.css'
 import ReactPaginate from 'react-paginate';
+import SockJsClient from 'react-stomp';
+
 
 class ListFieldComponents extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      id: 0,
+      id: null,
       fields: [],
-      show: false,
+
       label: "",
       type: "SINGLE_LINE_TEXT",
       options: [],
       isRequired: false,
       isActive: false,
+
+      show: false,
+
       totalCount: 0,
       page: 2,
-      size: 10
+      size: 10,
+
+      /*  clientRef: null, */
+      /*  handlers: [] */
     }
 
     this.editField = this.editField.bind(this);
@@ -35,7 +43,38 @@ class ListFieldComponents extends Component {
     this.cancel = this.cancel.bind(this)
     this.addField = this.addField.bind(this)
     this.retrieveTutorials = this.retrieveTutorials.bind(this)
+    /* 
+        this.sendMessage = this.sendMessage.bind(this) */
+    /* this.connect = this.connect.bind(this) */
+    /*  this.disconnect = this.disconnect.bind(this) *//* 
+    this.addHandler = this.addHandler.bind(this) */
   }
+
+  /* connect() {
+    const socket = new SockJS('/gs-guide-websocket');
+    this.setState({ stompClient: Stomp.over(socket) });
+    stompClient.connect({}, frame => {
+      console.log('Connected: ' + frame);
+      stompClient.subscribe('/topic/greetings', field => {
+        handlers.forEach(handler => handler(JSON.parse(field.body)))
+      });
+    });
+  }
+
+  disconnect() {
+    if (stompClient !== null) {
+      stompClient.disconnect()
+    }
+    console.log("Disconnected")
+  }
+ */
+  /*   sendMessage(field) {
+      this.stompClient.send("/app/hello", {}, JSON.stringify(field))
+    } */
+  /* 
+     addHandler(handler) {
+      this.setState({handlers: this.state.handlers.concat(handler)})
+    } */
 
   retrieveTutorials() {
     let params = {
@@ -59,35 +98,29 @@ class ListFieldComponents extends Component {
   }
 
   addField() {
-    if (this.state.id === 0) {
-      let field = {
-        label: this.state.label,
-        type: this.state.type,
-        isRequired: this.state.isRequired,
-        isActive: this.state.isActive,
-        /* options: */
-      }
-      console.log(field)
-      console.log(this.state.isRequired)
-      FieldService.createField(field)
-      this.cancel()
-
-    } else {
-      let field = {
-        id: this.state.id,
-        label: this.state.label,
-        type: this.state.type,
-        isRequired: this.state.isRequired,
-        isActive: this.state.isActive,
-        /* options: */
-      }
-      FieldService.updateField(field, this.state.id)
-      this.cancel()
+    let field =
+    {
+      id: this.state.id,
+      label: this.state.label,
+      type: this.state.type,
+      isRequired: this.state.isRequired,
+      isActive: this.state.isActive,
+      options: this.state.options
     }
+
+    this.clientRef.sendMessage("/app/fields", {}, JSON.stringify(field))
+/* 
+    if (this.state.id === null) {
+      FieldService.createField(field)
+    } else {
+      FieldService.updateField(field, this.state.id)
+    } */
+    this.cancel()
   }
 
+
   cancel() {
-    this.setState({ id: 0 })
+    this.setState({ id: null })
     this.setState({ show: false })
     this.setState({ label: "" })
     this.setState({ type: "" })
@@ -97,10 +130,6 @@ class ListFieldComponents extends Component {
   };
 
   componentDidMount() {
-    let params = {
-      page: this.state.page,
-      size: this.state.size
-    }
     FieldService.getFields().then((res) => {
       this.setState({ fields: res.data.content });
       this.setState({ totalCount: res.data.totalPages })
@@ -130,6 +159,22 @@ class ListFieldComponents extends Component {
   render() {
     return (
       <div className="main">
+          <SockJsClient
+          url={'http:///localhost:8080/gs-guide-websocket'}
+          topics={['/topic/fields']}
+          onConnect={console.log("Connected!!!!")}
+          onDisconnect={console.log("Disconnected!")}
+          ref={(client) => {
+            /* this.setState({ clientRef: client }) */
+            this.clientRef = client
+          }}
+          onMessage={msg => {
+            /*this.setState({ fields: [...this.state.fields, msg]}),*/
+            console.log(msg)
+          }}
+          debug={false}
+        />  
+
         <div className="container">
           <div className="row">
             <div className="col-md-12">

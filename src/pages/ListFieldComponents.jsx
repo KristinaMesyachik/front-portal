@@ -131,10 +131,12 @@ class ListFieldComponents extends Component {
           onDisconnect={console.log("Disconnected!")}
           onMessage={(msg)=>{
             console.log(msg)
-            FieldService.getFields().then((res) => {
+            if(msg !== "CREATE_RESPONSE"){
+              FieldService.getFields().then((res) => {
               this.setState({ fields: res.data.content });
               this.setState({ totalCount: res.data.totalPages })
             })
+            }
           }}
           debug={false}
         />

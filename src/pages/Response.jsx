@@ -20,8 +20,7 @@ export default class Response extends Component {
 
     this.state = {
       fields: [],
-      response: [],
-      qwq: []
+      response: []
     }
   }
 
@@ -38,6 +37,21 @@ export default class Response extends Component {
   render() {
     return (
       <div className="main">
+         <SockJsClient
+          url={'http:///localhost:8080/portal'}
+          topics={['/topic/portal']}
+          onConnect={console.log("Connected!!!!")}
+          onDisconnect={console.log("Disconnected!")}
+          onMessage={(msg)=>{
+            console.log(msg)
+            if(msg === "CREATE_RESPONSE"){
+              ResponseService.getResponses().then((result) => {
+                this.setState({ response: result.data.content });
+            })
+            }
+          }}
+          debug={false}
+        />
         <div className="container">
           <div className="row">
             <div className="col-md-12">

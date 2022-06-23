@@ -33,9 +33,6 @@ class ListFieldComponents extends Component {
       totalCount: 0,
       page: 2,
       size: 10,
-
-      /*  clientRef: null, */
-      /*  handlers: [] */
     }
 
     this.editField = this.editField.bind(this);
@@ -43,38 +40,7 @@ class ListFieldComponents extends Component {
     this.cancel = this.cancel.bind(this)
     this.addField = this.addField.bind(this)
     this.retrieveTutorials = this.retrieveTutorials.bind(this)
-    /* 
-        this.sendMessage = this.sendMessage.bind(this) */
-    /* this.connect = this.connect.bind(this) */
-    /*  this.disconnect = this.disconnect.bind(this) *//* 
-    this.addHandler = this.addHandler.bind(this) */
   }
-
-  /* connect() {
-    const socket = new SockJS('/gs-guide-websocket');
-    this.setState({ stompClient: Stomp.over(socket) });
-    stompClient.connect({}, frame => {
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('/topic/greetings', field => {
-        handlers.forEach(handler => handler(JSON.parse(field.body)))
-      });
-    });
-  }
-
-  disconnect() {
-    if (stompClient !== null) {
-      stompClient.disconnect()
-    }
-    console.log("Disconnected")
-  }
- */
-  /*   sendMessage(field) {
-      this.stompClient.send("/app/hello", {}, JSON.stringify(field))
-    } */
-  /* 
-     addHandler(handler) {
-      this.setState({handlers: this.state.handlers.concat(handler)})
-    } */
 
   retrieveTutorials() {
     let params = {
@@ -108,13 +74,11 @@ class ListFieldComponents extends Component {
       options: this.state.options
     }
 
-    this.clientRef.sendMessage("/app/fields", {}, JSON.stringify(field))
-/* 
     if (this.state.id === null) {
       FieldService.createField(field)
     } else {
       FieldService.updateField(field, this.state.id)
-    } */
+    }
     this.cancel()
   }
 
@@ -134,7 +98,8 @@ class ListFieldComponents extends Component {
       this.setState({ fields: res.data.content });
       this.setState({ totalCount: res.data.totalPages })
     });
-  }
+  };
+
 
   deleteField(id) {
     FieldService.deleteField(id).then(res => {
@@ -159,21 +124,20 @@ class ListFieldComponents extends Component {
   render() {
     return (
       <div className="main">
-          <SockJsClient
-          url={'http:///localhost:8080/gs-guide-websocket'}
-          topics={['/topic/fields']}
+         <SockJsClient
+          url={'http:///localhost:8080/portal'}
+          topics={['/topic/portal']}
           onConnect={console.log("Connected!!!!")}
           onDisconnect={console.log("Disconnected!")}
-          ref={(client) => {
-            /* this.setState({ clientRef: client }) */
-            this.clientRef = client
-          }}
-          onMessage={msg => {
-            /*this.setState({ fields: [...this.state.fields, msg]}),*/
+          onMessage={(msg)=>{
             console.log(msg)
+            FieldService.getFields().then((res) => {
+              this.setState({ fields: res.data.content });
+              this.setState({ totalCount: res.data.totalPages })
+            })
           }}
           debug={false}
-        />  
+        />
 
         <div className="container">
           <div className="row">
@@ -276,7 +240,7 @@ class ListFieldComponents extends Component {
                                   type="checkbox"
                                   id="inlineCheckbox2"
                                   checked={this.state.isActive}
-                                  onChange={(e) => this.setState({ isActive: !this.state.isActive })}
+                                  onChange={() => this.setState({ isActive: !this.state.isActive })}
                                 />
                                 <label class="form-check-label" for="inlineCheckbox2">
                                   Is Active
@@ -373,5 +337,4 @@ class ListFieldComponents extends Component {
     )
   }
 }
-
 export default ListFieldComponents;

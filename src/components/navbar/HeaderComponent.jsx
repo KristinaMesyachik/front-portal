@@ -6,6 +6,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from './logo1.svg'
 import cl from './Header.css'
 
+  const currentUser = sessionStorage.getItem("USER_NAME_SESSION_ATTRIBUTE_NAME");
+  
 const HeaderComponent = () => {
   return (
     <div>
@@ -26,7 +28,9 @@ const HeaderComponent = () => {
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link href="/fields/">Fields</Nav.Link>
                 <Nav.Link href="/">Responses</Nav.Link>
-                <NavDropdown title="Niskname" id="basic-nav-dropdown">
+                <Nav.Link href="/addResponse">ADD_Responses</Nav.Link>
+                <NavDropdown
+                  title={currentUser} id="basic-nav-dropdown">
                   <NavDropdown.Item href="/edit-profile/">
                     Edit Profile
                   </NavDropdown.Item>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import FieldService from "../services/FieldService";
-import { Modal } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
@@ -24,7 +24,7 @@ class ListFieldComponents extends Component {
 
       label: "",
       type: "SINGLE_LINE_TEXT",
-      options: [],
+      options: "",
       isRequired: false,
       isActive: false,
 
@@ -71,7 +71,7 @@ class ListFieldComponents extends Component {
       type: this.state.type,
       isRequired: this.state.isRequired,
       isActive: this.state.isActive,
-      options: this.state.options
+      options: this.state.options.split('\n').map(val => ({ ["title"]: val }))
     }
 
     if (this.state.id === null) {
@@ -87,8 +87,8 @@ class ListFieldComponents extends Component {
     this.setState({ id: null })
     this.setState({ show: false })
     this.setState({ label: "" })
-    this.setState({ type: "" })
-    this.setState({ options: [] })
+    this.setState({ type: "SINGLE_LINE_TEXT" })
+    this.setState({ options: "" })
     this.setState({ isRequired: false })
     this.setState({ isActive: false })
   };
@@ -114,28 +114,31 @@ class ListFieldComponents extends Component {
       this.setState({ show: true })
       this.setState({ label: field.label })
       this.setState({ type: field.type })
-      this.setState({ options: field.options })
+      let op = []
+      field.options.map(option => (
+        op.push(option.title)
+      ))
+      this.setState({ options: op.join('\n') })
       this.setState({ isRequired: field.isRequired })
       this.setState({ isActive: field.isActive })
-      console.log(field)
     })
   }
 
   render() {
     return (
       <div className="main">
-         <SockJsClient
-          url={'http:///localhost:8080/portal'}
+        <SockJsClient
+          url={'http://localhost:8080/portal'}
           topics={['/topic/portal']}
           onConnect={console.log("Connected!!!!")}
           onDisconnect={console.log("Disconnected!")}
-          onMessage={(msg)=>{
+          onMessage={(msg) => {
             console.log(msg)
-            if(msg !== "CREATE_RESPONSE"){
+            if (msg !== "CREATE_RESPONSE") {
               FieldService.getFields().then((res) => {
-              this.setState({ fields: res.data.content });
-              this.setState({ totalCount: res.data.totalPages })
-            })
+                this.setState({ fields: res.data.content });
+                this.setState({ totalCount: res.data.totalPages })
+              })
             }
           }}
           debug={false}
@@ -167,97 +170,106 @@ class ListFieldComponents extends Component {
                     </button>
 
                     <Modal show={this.state.show} onHide={this.cancel}>
-                      <Modal.Header closeButton>
-                        <Modal.Title>Add Field</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body className="show-grid">
-                        <Container>
-                          <Row>
-                            <Col md={2}>
-                              <label className="myLabel required">Label</label>
-                            </Col>
-                            <Col md={9}>
-                              <input className="myInput"
-                                value={this.state.label}
-                                onChange={(e) => this.setState({ label: e.target.value })}
-                                type="text"
-                                required
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md={2}>
-                              <label className="myLabel required">Type</label>
-                            </Col>
-                            <Col md={9}>
-                              <select className="mySelect"
-                                defaultValue={this.state.type}
-                                value={this.setState.type}
-                                onChange={(e) => this.setState({ type: e.target.value })}>
-                                <option value="SINGLE_LINE_TEXT">Single line text</option>
-                                <option value="MULTILINE_TEXT">Multiline text</option>
-                                <option value="RADIO_BUTTON">Radio button</option>
-                                <option value="CHECKBOX">Checkbox</option>
-                                <option value="COMBOBOX">Combobox</option>
-                                <option value="DATE">Date</option>
-                              </select>
-                            </Col>
-                          </Row>
-                          {this.state.type === "RADIO_BUTTON" ||
-                            this.state.type === "CHECKBOX" ||
-                            this.state.type === "COMBOBOX" ? (
+                      <Form name="form" onSubmit={this.addField}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Add Field</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body className="show-grid">
+                          <Container>
                             <Row>
-                              <Col xs={6} md={2}>
-                                <label className="myLabel required">Options</label>
+                              <Col md={2}>
+                                <label className="myLabel required">Label</label>
                               </Col>
-                              <Col xs={12} md={9}>
-                                <textarea className="myTextarea"
-                                  value={this.state.options.title}
-                                  onChange={(e) => this.setState({ options: e.target.value })}
+                              <Col md={9}>
+                                <input className="myInput"
+                                  value={this.state.label}
+                                  onChange={(e) => this.setState({ label: e.target.value })}
                                   type="text"
+                                  required = {false}
                                 />
-                                {/*<CreatableInputOnly handleSelectValues={this.state.options} /> */}
                               </Col>
                             </Row>
-                          ) : (<div></div>)}
-                          <Row>
-                            <Col xs={{ offset: 2 }} md={4}>
-                              <div className="form-check form-check-inline">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id="inlineCheckbox1"
-                                  checked={this.state.isRequired}
-                                  onChange={(e) => this.setState({ isRequired: !this.state.isRequired })}
-                                />
-                                <label className="form-check-label" for="inlineCheckbox1">
-                                  Required
-                                </label>
-                              </div>
-                            </Col>
-                            <Col md={4}>
-                              <div className="form-check form-check-inline">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id="inlineCheckbox2"
-                                  checked={this.state.isActive}
-                                  onChange={() => this.setState({ isActive: !this.state.isActive })}
-                                />
-                                <label class="form-check-label" for="inlineCheckbox2">
-                                  Is Active
-                                </label>
-                              </div>
-                            </Col>
-                          </Row>
-                        </Container>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <button className="myBtn whiteBtn" type="button" onClick={this.cancel}>
-                          CANCEL
-                        </button>
-                        <button className="myBtn blueBtn" onClick={this.addField}>SAVE</button>
-                      </Modal.Footer>
+                            <Row>
+                              <Col md={2}>
+                                <label className="myLabel required">Type</label>
+                              </Col>
+                              <Col md={9}>
+                                <select className="mySelect"
+                                  defaultValue={this.state.type}
+                                  value={this.state.type}
+                                  onChange={(e) => this.setState({ type: e.target.value })} 
+                                  required>
+                                  <option value="SINGLE_LINE_TEXT">Single line text</option>
+                                  <option value="MULTILINE_TEXT">Multiline text</option>
+                                  <option value="RADIO_BUTTON">Radio button</option>
+                                  <option value="CHECKBOX">Checkbox</option>
+                                  <option value="COMBOBOX">Combobox</option>
+                                  <option value="DATE">Date</option>
+                                </select>
+                              </Col>
+                            </Row>
+                            {this.state.type === "RADIO_BUTTON" ||
+                              this.state.type === "CHECKBOX" ||
+                              this.state.type === "COMBOBOX" ? (
+                              <Row>
+                                <Col xs={6} md={2}>
+                                  <label className="myLabel required">Options</label>
+                                </Col>
+                                <Col xs={12} md={9}>
+                                  <textarea className="myTextarea"
+                                    value={this.state.options}
+                                    onChange={(e) => this.setState({ options: e.target.value })}
+                                    type="text"
+                                    required
+                                  />
+                                  {/*<CreatableInputOnly handleSelectValues={this.state.options} /> */}
+                                </Col>
+                              </Row>
+                            ) : (<div></div>)}
+                            <Row>
+                              <Col xs={{ offset: 2 }} md={4}>
+                                <div className="form-check form-check-inline">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="inlineCheckbox1"
+                                    checked={this.state.isRequired}
+                                    onChange={(e) => this.setState({ isRequired: !this.state.isRequired })}
+                                  />
+                                  <label className="form-check-label" for="inlineCheckbox1">
+                                    Required
+                                  </label>
+                                </div>
+                              </Col>
+                              <Col md={4}>
+                                <div className="form-check form-check-inline">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="inlineCheckbox2"
+                                    checked={this.state.isActive}
+                                    onChange={() => this.setState({ isActive: !this.state.isActive })}
+                                  />
+                                  <label class="form-check-label" for="inlineCheckbox2">
+                                    Is Active
+                                  </label>
+                                </div>
+                              </Col>
+                            </Row>
+                          </Container>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <button className="myBtn whiteBtn" type="button" onClick={this.cancel}>
+                            CANCEL
+                          </button>
+                          <button className="myBtn blueBtn"
+                          /* disabled={this.state.label === ""
+                            ||
+                            ((this.state.type === "RADIO_BUTTON" || this.state.type === "CHECKBOX" || this.state.type === "COMBOBOX") && this.state.options === "")
+                          } *//* 
+                          onClick={this.addField} */>SAVE</button>
+                        </Modal.Footer>
+                      </Form>
                     </Modal>
                   </div>
                 </caption>

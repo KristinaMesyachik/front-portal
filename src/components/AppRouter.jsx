@@ -13,6 +13,8 @@ import Logout from "../pages/Logout";
 import SuccessfulResponse from "../pages/SuccessfulResponse";
 import ChangeProfile from "../pages/ChangeProfile";
 import EditPassword from "../pages/EditPassword";
+import Registration from "../pages/Registration";
+
 
 const AppRouter = () => {
   return (
@@ -22,7 +24,8 @@ const AppRouter = () => {
           <Route path="/" element={<AddResponse />} />
           <Route path="/fields" element={<ListFieldComponents />} />
           <Route path="/responses" element={<Response />} />
-          <Route path="/login" element={<Login />} />          
+          <Route path="/login" element={<Login />} />   
+          <Route path="/registration" element={<Registration />} />        
           <Route path="/success" element={<SuccessfulResponse />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/changeProfile" element={<ChangeProfile />} />

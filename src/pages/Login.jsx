@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import UserService from "../services/UserService";
 import logo from '../components/navbar/logo1.svg'
 import { Form } from "react-bootstrap";
+import { Navigate } from 'react-router-dom'
 import '../components/styles/Login.css'
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -13,7 +14,7 @@ class Login extends Component {
             username: "",
             password: "",
             hasLoginFailed: false,
-            showSuccessMessage: false
+            shouldRedirect: false
         }
         this.login = this.login.bind(this)
     }
@@ -23,12 +24,9 @@ class Login extends Component {
         UserService.login(this.state.username, this.state.password)
             .then((msg) => {
                 UserService.registerSuccessfulLogin(this.state.username, this.state.password)
-                this.props.history.push('/fields')////
-                this.setState({ showSuccessMessage: true })
-                this.setState({ hasLoginFailed: false })
+                this.setState({ shouldRedirect: true })
             })
             .catch(() => {
-                this.setState({ showSuccessMessage: false })
                 this.setState({ hasLoginFailed: true })
             })
     }
@@ -36,9 +34,10 @@ class Login extends Component {
     render() {
         return (
             <div className="main" >
+                {this.state.shouldRedirect && <Navigate replace to="/fields" />}
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-6 centered">
+                        <div className="col-md-3 centered">
                             <div className="blockCenter">
                                 <img className="logo" src={logo}
                                     width="200" height="50"
@@ -48,8 +47,6 @@ class Login extends Component {
                             </div>
 
                             {this.state.hasLoginFailed && <div className="alert alert-warning">Invalid Credentials</div>}
-                            {this.state.showSuccessMessage && <div>Login Sucessful</div>}
-
                             <Form name="login" onSubmit={this.login}>
 
                                 <div className="form-outline mb-4">
@@ -85,7 +82,7 @@ class Login extends Component {
                                 </div>
                                 <button type="submit" className="btn btn-primary btn-block mb-4">LOG IN</button>
                                 <div className="text-center">
-                                    <p>Don't have account? <a href="/registration/">Sign Up</a></p>
+                                    <p>Don't have account? <a href="/registration">Sign Up</a></p>
                                 </div>
                             </Form>
                         </div>

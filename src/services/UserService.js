@@ -19,9 +19,7 @@ class UserService {
     }
 
     singup(user) {
-        return axios.post(FIELD_API_BASE_URL + '/signup/',
-            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
-            user);
+        return axios.post(FIELD_API_BASE_URL + '/signup/', user);
     }
 
     findByUsername() {

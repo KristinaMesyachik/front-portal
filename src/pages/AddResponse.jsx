@@ -15,7 +15,10 @@ function Find(props) {
                     {props.fields.label}
                 </label>
                 <input className="myInput"
-                    onChange={(e) => props.answer = e.target.value}
+                    onChange={(e) => {
+                        let value = e.target.value
+                        props.findAnswerChild(value, props.fields)
+                    }}
                     type="text"
                     required={props.fields.isRequired}
                 />
@@ -115,29 +118,40 @@ export default class AddResponse extends Component {
 
         this.state = {
             fields: [],
-            answers: [],
-            answer: ""
+            answers: []
         }
-
-        this.addResponse = this.addResponse.bin
+        this.addResponse = this.addResponse.bind(this)
+        this.findAnswer = this.findAnswer.bind(this)
     }
 
-    addResponse() {
+    addResponse(e) {
+        e.preventDefault();
         console.log("answer")
-        console.log(this.state.answer)
+        console.log(this.state.answers)
+    }
+
+    findAnswer = (value, fields) => {
+        this.setState({
+            answers: this.state.answers.filter(ans => ans.field.id !== fields.id)
+        })
+         let newAnswer = {
+            field: fields,
+            answer: value
+        }
+        this.setState({ answers: [...this.state.answers, newAnswer] })
     }
 
     componentDidMount() {
         FieldService.getFieldsIsActive().then((result) => {
             this.setState({ fields: result.data });
         });
-
     }
 
     render() {
         return (
             <div className="main">
-                {/*  <SockJsClient
+                <div>
+                     {/*  <SockJsClient
                     url={'http:///localhost:8080/portal'}
                     topics={['/topic/portal']}
                     onConnect={console.log("Connected!!!!")}
@@ -152,6 +166,7 @@ export default class AddResponse extends Component {
                     }}
                     debug={false}
                 /> */}
+                </div>
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
@@ -159,9 +174,7 @@ export default class AddResponse extends Component {
 
                                 {this.state.fields.map((fields) => (
                                     <div>
-                                        <Find fields={fields} answer={this.state.answer} />
-                                        <br>
-                                        </br>
+                                        <Find fields={fields} findAnswerChild={this.findAnswer} />
                                     </div>
                                 ))
                                 }

@@ -17,19 +17,24 @@ class FieldService {
     }
 
     createField(field) {
-        return axios.post(FIELD_API_BASE_URL + '/', field);
+        return axios.post(FIELD_API_BASE_URL + '/', field,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 
     getFieldById(fieldId) {
-        return axios.get(FIELD_API_BASE_URL + '/' + fieldId);
+        return axios.get(FIELD_API_BASE_URL + '/' + fieldId,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 
     updateField(field, fieldId) {
-        return axios.put(FIELD_API_BASE_URL + '/' + fieldId, field);
+        return axios.put(FIELD_API_BASE_URL + '/' + fieldId, field,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+        );
     }
 
     deleteField(fieldId) {
-        return axios.delete(FIELD_API_BASE_URL + '/' + fieldId);
+        return axios.delete(FIELD_API_BASE_URL + '/' + fieldId,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 }
 

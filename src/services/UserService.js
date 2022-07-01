@@ -5,8 +5,8 @@ const FIELD_API_BASE_URL = "http://localhost:8080/api/users"
 
 class UserService {
     login(username, password) {
-        return axios.get(FIELD_API_BASE_URL + '/login/', 
-        { headers: { authorization: this.createBasicAuthToken(username, password) } });
+        return axios.get(FIELD_API_BASE_URL + '/login/',
+            { headers: { authorization: this.createBasicAuthToken(username, password) } });
     }
 
     createBasicAuthToken(username, password) {
@@ -19,15 +19,26 @@ class UserService {
     }
 
     singup(user) {
-        return axios.post(FIELD_API_BASE_URL + '/signup/', user);
+        return axios.post(FIELD_API_BASE_URL + '/signup/',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+            user);
+    }
+
+    findByUsername() {
+        return axios.get(FIELD_API_BASE_URL + '/',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 
     update(user) {
-        return axios.put(FIELD_API_BASE_URL + '/', user);
+        return axios.put(FIELD_API_BASE_URL + '/', user,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+        );
     }
 
     editPassword(params) {
-        return axios.post(FIELD_API_BASE_URL + '/edit-password/', {params});
+        return axios.post(FIELD_API_BASE_URL + '/editPassword/', { params },
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+        );
     }
 }
 

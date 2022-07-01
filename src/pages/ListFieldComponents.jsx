@@ -4,12 +4,12 @@ import { Form, Modal } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
-import cl2 from '../components/styles/ListField.css'
-import style1 from '../components/styles/MyButton.css'
-import style2 from '../components/styles/MyInput.css'
-import style3 from '../components/styles/MyLabel.css'
-import style4 from '../components/styles/MySelect.css'
-import style5 from '../components/styles/MyTextarea.css'
+import '../components/styles/ListField.css'
+import '../components/styles/MyButton.css'
+import '../components/styles/MyInput.css'
+import '../components/styles/MyLabel.css'
+import '../components/styles/MySelect.css'
+import '../components/styles/MyTextarea.css'
 import ReactPaginate from 'react-paginate';
 import SockJsClient from 'react-stomp';
 
@@ -31,18 +31,18 @@ class ListFieldComponents extends Component {
       show: false,
 
       totalCount: 0,
-      page: 2,
+      page: 0,
       size: 10,
     }
 
     this.editField = this.editField.bind(this);
     this.deleteField = this.deleteField.bind(this);
     this.cancel = this.cancel.bind(this)
-    this.addField = this.addField.bind(this)
-    this.retrieveTutorials = this.retrieveTutorials.bind(this)
+    this.addField = this.addField.bind(this)/* 
+    this.retrieveTutorials = this.retrieveTutorials.bind(this) */
   }
 
-  retrieveTutorials() {
+ /*  retrieveTutorials() {
     let params = {
       page: this.state.page,
       size: this.state.size
@@ -61,9 +61,10 @@ class ListFieldComponents extends Component {
       .catch((e) => {
         console.log(e);
       });
-  }
+  } */
 
-  addField() {
+  addField(e) {
+    e.preventDefault()
     let field =
     {
       id: this.state.id,
@@ -222,7 +223,6 @@ class ListFieldComponents extends Component {
                                     type="text"
                                     required
                                   />
-                                  {/*<CreatableInputOnly handleSelectValues={this.state.options} /> */}
                                 </Col>
                               </Row>
                             ) : (<div></div>)}
@@ -262,12 +262,7 @@ class ListFieldComponents extends Component {
                           <button className="myBtn whiteBtn" type="button" onClick={this.cancel}>
                             CANCEL
                           </button>
-                          <button className="myBtn blueBtn"
-                          /* disabled={this.state.label === ""
-                            ||
-                            ((this.state.type === "RADIO_BUTTON" || this.state.type === "CHECKBOX" || this.state.type === "COMBOBOX") && this.state.options === "")
-                          } *//* 
-                          onClick={this.addField} */>SAVE</button>
+                          <button className="myBtn blueBtn">SAVE</button>
                         </Modal.Footer>
                       </Form>
                     </Modal>
@@ -336,11 +331,13 @@ class ListFieldComponents extends Component {
           </div>
         </div>
         {/*  <ReactPaginate
+         className="pagination"
           breakLabel="..."
           nextLabel=">"
           onPageChange={(e) => {
-            this.setState({ page: 4 });
-            console.log(e); this.retrieveTutorials()
+            this.setState({ page: e.selected});
+            console.log(e.selected)
+            this.retrieveTutorials()
           }}
           pageRangeDisplayed={1}
           pageCount={this.state.totalCount}

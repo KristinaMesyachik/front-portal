@@ -26,7 +26,7 @@ const AppRouter = () => {
           <Route path="/responses" element={<Response />} />
           <Route path="/login" element={<Login />} />   
           <Route path="/registration" element={<Registration />} />        
-          <Route path="/success" element={<SuccessfulResponse />} />
+          <Route path="/queationnaires/:id" element={<SuccessfulResponse />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/changeProfile" element={<ChangeProfile />} />
           <Route path="/editPassword" element={<EditPassword />} />

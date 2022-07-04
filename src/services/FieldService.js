@@ -5,7 +5,8 @@ const FIELD_API_BASE_URL = "http://localhost:8080/api/fields"
 
 class FieldService {
     getFields(params) {
-        return axios.get(FIELD_API_BASE_URL + '/', { params });
+        return axios.get(FIELD_API_BASE_URL + '/',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } })
     }
 
     getAllFields() {

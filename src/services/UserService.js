@@ -29,13 +29,13 @@ class UserService {
 
     update(user) {
         return axios.put(FIELD_API_BASE_URL + '/', user,
-            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } }
         );
     }
 
     editPassword(params) {
-        return axios.post(FIELD_API_BASE_URL + '/editPassword/', { params },
-            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+        return axios.get(FIELD_API_BASE_URL + '/editPassword/?password=' + params.password + '&newPassword=' + params.newPassword+'',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } }
         );
     }
 }

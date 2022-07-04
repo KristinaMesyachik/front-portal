@@ -5,11 +5,12 @@ const FIELD_API_BASE_URL = "http://localhost:8080/api/fields"
 
 class FieldService {
     getFields(params) {
-        return axios.get(FIELD_API_BASE_URL + '/', {params});
+        return axios.get(FIELD_API_BASE_URL + '/',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } })
     }
 
     getAllFields() {
-        return axios.get(FIELD_API_BASE_URL + '/');
+        return axios.get(FIELD_API_BASE_URL + '/all/');
     }
 
     getFieldsIsActive() {
@@ -17,19 +18,24 @@ class FieldService {
     }
 
     createField(field) {
-        return axios.post(FIELD_API_BASE_URL + '/', field);
+        return axios.post(FIELD_API_BASE_URL + '/', field,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 
     getFieldById(fieldId) {
-        return axios.get(FIELD_API_BASE_URL + '/' + fieldId);
+        return axios.get(FIELD_API_BASE_URL + '/' + fieldId,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 
     updateField(field, fieldId) {
-        return axios.put(FIELD_API_BASE_URL + '/' + fieldId, field);
+        return axios.put(FIELD_API_BASE_URL + '/' + fieldId, field,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+        );
     }
 
     deleteField(fieldId) {
-        return axios.delete(FIELD_API_BASE_URL + '/' + fieldId);
+        return axios.delete(FIELD_API_BASE_URL + '/' + fieldId,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
     }
 }
 

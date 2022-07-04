@@ -5,11 +5,16 @@ const FIELD_API_BASE_URL = "http://localhost:8080/api/responses"
 
 class ResponseService {
     getResponses(params) {
-        return axios.get(FIELD_API_BASE_URL + '/', {params});
+        return axios.get(FIELD_API_BASE_URL + '/',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+            params
+        );
     }
 
-    createResponse(field) {
-        return axios.post(FIELD_API_BASE_URL + '/', field);
+    createResponse(response) {
+        return axios.post(FIELD_API_BASE_URL + '/', response,
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } },
+        );
     }
 }
 

@@ -4,12 +4,9 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from './logo1.svg'
-import { Link } from "react-router-dom";
-import './Header.css'
-/* 
-  const currentUser = sessionStorage.getItem("USER_NAME_SESSION_ATTRIBUTE_NAME"); */
+import cl from './Header.css'
   
-const HeaderComponent = (props) => {
+const HeaderComponentLogin = () => {
   return (
     <div>
       <header>
@@ -27,20 +24,7 @@ const HeaderComponent = (props) => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link href="/fields">Fields</Nav.Link>
-                <Nav.Link href="/responses">Responses</Nav.Link>
-                <NavDropdown
-                  title={props.username} id="basic-nav-dropdown">
-                  <NavDropdown.Item href="/changeProfile">
-                    Edit Profile
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href="/editPassword">
-                    Change Password
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href="/logout">
-                    Log out
-                  </NavDropdown.Item>
-                </NavDropdown>
+                <Nav.Link href="/login">Login</Nav.Link>
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -49,4 +33,4 @@ const HeaderComponent = (props) => {
     </div>
   );
 };
-export default HeaderComponent;
+export default HeaderComponentLogin;

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import UserService from "../services/UserService";
 
-import { Container } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 
 import '../components/styles/ListField.css'
@@ -10,7 +9,8 @@ import '../components/styles/MyInput.css'
 import '../components/styles/MyLabel.css'
 import '../components/styles/MySelect.css'
 import '../components/styles/MyTextarea.css'
-import 'react-phone-number-input/style.css'
+import '../components/styles/MyDiv.css'
+import '../components/styles/MyTextForInput.css'
 
 class ChangeProfile extends Component {
 
@@ -49,45 +49,53 @@ class ChangeProfile extends Component {
 
     render() {
         return (
-            <div>
+            <div className="main">
                 <Form name="form" onSubmit={this.updateProfile}>
-                    <Container className="col-md-3">
-                        <label className="myLabel">First Name</label>
-                        <input className="myInput"
-                            value={this.state.firstname}
-                            onChange={(e) => this.setState({ firstname: e.target.value })}
-                            type="text"
-                            required={false}
-                        />
-                        <label className="myLabel">Last Name</label>
-                        <input className="myInput"
-                            value={this.state.lastname}
-                            onChange={(e) => this.setState({ lastname: e.target.value })}
-                            type="text"
-                            required={false}
-                        />
-                        <label className="myLabel required">Email</label>
-                        <input className="myInput"
-                            value={this.state.username}
-                            onChange={(e) => this.setState({ username: e.target.value })}
-                            type="email"
-                            required
-                        />
-                        <label className="myLabel">Phone Number</label>
-                        <input
-                            pattern="[+][0-9]{12}"
-                            type="text"
-                            value={this.state.phone}
-                            onChange={(e) => { this.setState({ phone: e.target.value }) }
-                            }
-                            required={false}
-                            placeholder = "+xxxxxxxxxxxx"
-
-                        />
-                        <button className="myBtn blueBtn">SAVE</button>
-                    </Container>
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-5 centered">
+                                <div className="myDiv">
+                                    <label className="myLabel"><h5>Edit Profile</h5></label>
+                                    <hr></hr>
+                                    <label className="myLabel forInput">First Name</label>
+                                    <input className="myInput"
+                                        value={this.state.firstname}
+                                        onChange={(e) => this.setState({ firstname: e.target.value })}
+                                        type="text"
+                                        required={false}
+                                    />
+                                    <label className="myLabel forInput">Last Name</label>
+                                    <input className="myInput"
+                                        value={this.state.lastname}
+                                        onChange={(e) => this.setState({ lastname: e.target.value })}
+                                        type="text"
+                                        required={false}
+                                    />
+                                    <label className="myLabel required forInput">Email</label>
+                                    <input className="myInput"
+                                        value={this.state.username}
+                                        onChange={(e) => this.setState({ username: e.target.value })}
+                                        type="email"
+                                        required
+                                    />
+                                    <label className="myLabel forInput">Phone Number</label>
+                                    <input
+                                        className="myInput"
+                                        pattern="[+][0-9]{12}"
+                                        type="text"
+                                        value={this.state.phone}
+                                        onChange={(e) => { this.setState({ phone: e.target.value }) }
+                                        }
+                                        required={false}
+                                        placeholder="+xxxxxxxxxxxx"
+                                    />
+                                    <button className="myBtn blueBtn">SAVE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </Form>
-            </div>
+            </div >
         );
     };
 }

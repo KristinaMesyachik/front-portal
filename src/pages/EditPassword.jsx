@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import UserService from "../services/UserService";
-
-import { Container } from "react-bootstrap";
 import { Form } from "react-bootstrap";
-
 import '../components/styles/ListField.css'
 import '../components/styles/MyButton.css'
 import '../components/styles/MyInput.css'
@@ -19,7 +16,7 @@ class EditPassword extends Component {
             currentPass: "",
             newPass: "",
             confirmNewPass: "",
-            error:""
+            error: ""
         }
 
         this.changePass = this.changePass.bind(this)
@@ -27,49 +24,55 @@ class EditPassword extends Component {
 
     changePass(e) {
         let params = {
-            password: this.state.currentPass,
-            newPassword: this.state.newPass
+            newPassword: this.state.newPass,
+            password: this.state.currentPass
         }
         if (this.state.newPass === this.state.confirmNewPass) {
-            console.log(params)
-           /*  UserService.editPassword(params) */
-            e.preventDefault()
-            this.setState({error : "password chenge"})
-        }else {
-            this.setState({error : "passwords don't match"})
-            e.preventDefault()
+            UserService.editPassword(params)
+            this.setState({ error: "password chenged" })
+        } else {
+            this.setState({ error: "passwords don't match" })
         }
+        e.preventDefault()
     }
 
     render() {
         return (
-            <div>
+            <div className="main">
                 <Form name="form" onSubmit={this.changePass}>
-                    <Container className="col-md-3">
-                        <label className="myLabel required">Current Password</label>
-                        <input className="myInput"
-                            value={this.state.firstname}
-                            onChange={(e) => this.setState({ currentPass: e.target.value })}
-                            type="password"
-                            required
-                        />
-                        <label className="myLabel required">New Password</label>
-                        <input className="myInput"
-                            value={this.state.lastname}
-                            onChange={(e) => this.setState({ newPass: e.target.value })}
-                            type="password"
-                            required
-                        />
-                        <label className="myLabel required">Confirm New Password</label>
-                        <input className="myInput"
-                            value={this.state.username}
-                            onChange={(e) => this.setState({ confirmNewPass: e.target.value })}
-                            type="password"
-                            required
-                        />
-                        <label className="myLabel">{this.state.error}</label>
-                        <button className="myBtn blueBtn">CHANGE</button>
-                    </Container>
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-5 centered">
+                                <div className="myDiv">
+                                    <label className="myLabel"><h5>Change Password</h5></label>
+                                    <hr></hr>
+                                    <label className="myLabel required forInput">Current Password</label>
+                                    <input className="myInput"
+                                        value={this.state.firstname}
+                                        onChange={(e) => this.setState({ currentPass: e.target.value })}
+                                        type="password"
+                                        required
+                                    />
+                                    <label className="myLabel required forInput">New Password</label>
+                                    <input className="myInput"
+                                        value={this.state.lastname}
+                                        onChange={(e) => this.setState({ newPass: e.target.value })}
+                                        type="password"
+                                        required
+                                    />
+                                    <label className="myLabel required forInput">Confirm New Password</label>
+                                    <input className="myInput"
+                                        value={this.state.username}
+                                        onChange={(e) => this.setState({ confirmNewPass: e.target.value })}
+                                        type="password"
+                                        required
+                                    />
+                                    <label className="myLabel">{this.state.error}</label>
+                                    <button className="myBtn blueBtn">CHANGE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </Form>
             </div>
         );

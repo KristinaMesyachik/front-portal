@@ -5,21 +5,21 @@ const FIELD_API_BASE_URL = "http://localhost:8080/api/users"
 
 class UserService {
     login(username, password) {
-        return axios.get(FIELD_API_BASE_URL + '/login/',
-            { headers: { authorization: this.createBasicAuthToken(username, password) } });
+        return axios
+            .post("http://localhost:8080" + '/login', {
+                username,
+                password
+            });
     }
 
-    createBasicAuthToken(username, password) {
-        return 'Basic ' + window.btoa(username + ":" + password)
-    }
 
-    registerSuccessfulLogin(username, password) {
+    registerSuccessfulLogin(username, auth) {
+        sessionStorage.setItem("USER_AUTHORIZATION", auth)
         sessionStorage.setItem("USER_NAME_SESSION_ATTRIBUTE_NAME", username)
-        sessionStorage.setItem("USER_AUTHORIZATION", 'Basic ' + window.btoa(username + ":" + password))
     }
 
     singup(user) {
-        return axios.post(FIELD_API_BASE_URL + '/signup/', user);
+        return axios.post(FIELD_API_BASE_URL + '/signup', user);
     }
 
     findByUsername() {

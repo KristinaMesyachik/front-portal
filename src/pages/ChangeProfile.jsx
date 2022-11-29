@@ -18,6 +18,7 @@ class ChangeProfile extends Component {
         super(props)
 
         this.state = {
+            id:"",
             firstname: "",
             lastname: "",
             username: "",
@@ -30,6 +31,7 @@ class ChangeProfile extends Component {
     componentDidMount() {
         UserService.findByUsername().then((res) => {
             let user = res.data;
+            this.setState({ id: user.id });
             this.setState({ firstname: user.firstname });
             this.setState({ lastname: user.lastname })
             this.setState({ username: user.username })
@@ -39,6 +41,7 @@ class ChangeProfile extends Component {
 
     updateProfile() {
         let user = {
+            id: this.state.id,
             username: this.state.username,
             firstname: this.state.firstname,
             lastname: this.state.lastname,
@@ -81,7 +84,7 @@ class ChangeProfile extends Component {
                                     <label className="myLabel forInput">Phone Number</label>
                                     <input
                                         className="myInput"
-                                        pattern="[+][0-9]{12}"
+                                        pattern="^$|[+][0-9]{12}|[0-9]{11}"
                                         type="text"
                                         value={this.state.phone}
                                         onChange={(e) => { this.setState({ phone: e.target.value }) }

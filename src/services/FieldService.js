@@ -4,8 +4,12 @@ import axios from 'axios';
 const FIELD_API_BASE_URL = "http://localhost:8080/api/fields"
 
 class FieldService {
-    getFields(params) {
+    /*getFields(params) {
         return axios.get(FIELD_API_BASE_URL + '/',
+            { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } });
+    }*/
+    getFieldswithPage(currentPage, pageLimit) {
+        return axios.get(FIELD_API_BASE_URL + '/?page='+currentPage+'&size='+pageLimit,
             { headers: { authorization: sessionStorage.getItem("USER_AUTHORIZATION") } })
     }
 

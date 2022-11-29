@@ -27,13 +27,22 @@ class Registration extends Component {
         if (this.state.password === this.state.confirmPassword) {
             let user = {
                 username: this.state.username,
-                password: this.state.username,
-                firstname: this.state.username,
-                lastname: this.state.username,
-                phone: this.state.username,
+                password: this.state.password,
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
+                phone: this.state.phone,
             }
             UserService.singup(user)
-            this.setState({ shouldRedirect: true })
+            .then((response) => {
+                this.setState({
+                    message: response.data.message,
+                    successful: true
+                  });
+                this.setState({ shouldRedirect: true })
+            })
+            .catch(() => {
+                this.setState({ hasLoginFailed: true })
+            })
         } else {
             this.setState({ hasLoginFailed: true })
         }

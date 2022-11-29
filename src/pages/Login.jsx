@@ -23,11 +23,11 @@ class Login extends Component {
     login(e) {
         e.preventDefault()
         UserService.login(this.state.username, this.state.password)
-            .then((msg) => {
-                UserService.registerSuccessfulLogin(this.state.username, this.state.password)
+            .then((response) => {
+                UserService.registerSuccessfulLogin(this.state.username, response.data.Authorization)
                 this.setState({ shouldRedirect: true })
             })
-            .catch(() => {
+             .catch(() => {
                 this.setState({ hasLoginFailed: true })
             })
     }

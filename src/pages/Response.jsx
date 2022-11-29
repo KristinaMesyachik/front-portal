@@ -4,6 +4,8 @@ import SockJsClient from 'react-stomp';
 import ResponseService from "../services/ResponseService";
 import '../components/styles/ListField.css'
 import '../components/styles/MyDiv.css'
+import '../components/styles/Pagination.css'
+import ReactPaginate from 'react-paginate';
 
 function Find(props) {
   let qqq = (props.answers).filter((ans) => (
@@ -21,18 +23,43 @@ export default class Response extends Component {
 
     this.state = {
       fields: [],
-      response: []
+      responses: [],
+
+      totalCount: null,
+      page: 1,
+      size: 3
     }
+
+    this.retrieveTutorials = this.retrieveTutorials.bind(this)
+  }
+
+  retrieveTutorials(e) {
+    ResponseService.getResponses(e + 1, this.state.size)
+      .then((response) => {
+        this.setState({
+          responses: response.data.content,
+          totalCount: response.data.totalPages,
+        });
+        FieldService.getAllFields().then((result) => {
+          this.setState({ fields: result.data });
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   componentDidMount() {
-    ResponseService.getResponses().then((result) => {
-      this.setState({ response: result.data.content });
+    ResponseService.getResponses(this.state.page, this.state.size)
+    .then((result) => {
+      this.setState({ 
+        totalCount: result.data.totalPages,
+        responses: result.data.content 
+      });
       FieldService.getAllFields().then((result) => {
         this.setState({ fields: result.data });
       });
     });
-
   }
 
   render() {
@@ -73,7 +100,7 @@ export default class Response extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.response.map((resp) => (
+                    {this.state.responses.map((resp) => (
                       <tr key={resp.id}>
                         {this.state.fields.map((fields) => (
                           <Find fields={fields} answers={resp.answers} />
@@ -84,6 +111,25 @@ export default class Response extends Component {
                     }
                   </tbody>
                 </table>
+                <div>
+                  <ReactPaginate
+                  breakLabel="..."
+                  nextLabel=">"
+                  onPageChange={(e) => {
+                  this.retrieveTutorials(e.selected)
+                  }}
+                  pageRangeDisplayed={1}
+                  pageCount={this.state.totalCount}
+                  previousLabel="<"
+                  marginPagesDisplayed={2}
+                  renderOnZeroPageCount={null}
+                  containerClassName={"navigationButtons"}
+                  previousLinkClassName={"previousButton"}
+                  nextLinkClassName={"nextButton"}
+                  disabledClassName={"navigationDisabled"}
+                  activeClassName={"navigationActive"}
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -8,9 +8,10 @@ import '../components/styles/MyLabel.css'
 import '../components/styles/MySelect.css'
 import '../components/styles/MyTextarea.css'
 import '../components/styles/MyDiv.css'
+import '../components/styles/Pagination.css'
+
 import ReactPaginate from 'react-paginate';
 import SockJsClient from 'react-stomp';
-
 
 class ListFieldComponents extends Component {
   constructor(props) {
@@ -22,49 +23,42 @@ class ListFieldComponents extends Component {
 
       label: "",
       type: "SINGLE_LINE_TEXT",
-      options: null,
+      options: "",
       isRequired: false,
       isActive: false,
 
       show: false,
 
-      totalCount: 0,
-      page: 0,
-      size: 10,
+      totalCount: null,
+      page: 1,
+      size: 3
     }
 
     this.editField = this.editField.bind(this);
     this.deleteField = this.deleteField.bind(this);
     this.cancel = this.cancel.bind(this)
-    this.addField = this.addField.bind(this)/* 
-    this.retrieveTutorials = this.retrieveTutorials.bind(this) */
+    this.addField = this.addField.bind(this)
+    this.retrieveTutorials = this.retrieveTutorials.bind(this)
   }
 
-  /*  retrieveTutorials() {
-     let params = {
-       page: this.state.page,
-       size: this.state.size
-     }
- 
-     console.log(this.state.page)//не изменяется страница
-     FieldService.getAll(params)
-       .then((response) => {
-         const { content, totalPages } = response.data;
-         this.setState({
-           fields: content,
-           totalCount: totalPages,
-         });
-         console.log(response);
-       })
-       .catch((e) => {
-         console.log(e);
-       });
-   } */
+    retrieveTutorials(e) {
+    FieldService.getFieldswithPage(e+1, this.state.size)
+      .then((response) => {
+        const { content, totalPages } = response.data;
+        this.setState({
+          fields: content,
+          totalCount: totalPages,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    }
 
   addField(e) {
     e.preventDefault()
     let opt = []
-    if (this.state.options !== null) {
+    if (this.state.options !== "") {
       opt = this.state.options.split('\n').map(val => ({ ["title"]: val }))
     }
     let field =
@@ -76,7 +70,6 @@ class ListFieldComponents extends Component {
       isActive: this.state.isActive,
       options: opt
     }
-
     if (this.state.id === null) {
       FieldService.createField(field)
     } else {
@@ -84,7 +77,6 @@ class ListFieldComponents extends Component {
     }
     this.cancel()
   }
-
 
   cancel() {
     this.setState({ id: null })
@@ -97,10 +89,16 @@ class ListFieldComponents extends Component {
   };
 
   componentDidMount() {
-    FieldService.getFields().then((res) => {
-      this.setState({ fields: res.data.content });
-      this.setState({ totalCount: res.data.totalPages })
-    });
+    FieldService.getFieldswithPage(this.state.page, this.state.size)
+       .then((response) => {
+         this.setState({
+           fields: response.data.content,
+           totalCount: response.data.totalPages
+         });
+       })
+       .catch((e) => {
+         console.log(e);
+       });
   };
 
 
@@ -117,11 +115,13 @@ class ListFieldComponents extends Component {
       this.setState({ show: true })
       this.setState({ label: field.label })
       this.setState({ type: field.type })
-      let op = []
-      field.options.map(option => (
+      let op = [];
+      if(field.options!==[]){
+        field.options.map(option => (
         op.push(option.title)
       ))
       this.setState({ options: op.join('\n') })
+      }
       this.setState({ isRequired: field.isRequired })
       this.setState({ isActive: field.isActive })
     })
@@ -133,8 +133,8 @@ class ListFieldComponents extends Component {
         <SockJsClient
           url={'http://localhost:8080/portal'}
           topics={['/topic/portal']}
-          onConnect={console.log("Connected!!!!")}
-          onDisconnect={console.log("Disconnected!")}
+          //onConnect={console.log("Connected!!!!")}
+          //onDisconnect={console.log("Disconnected!")}
           onMessage={(msg) => {
             console.log(msg)
             if (msg !== "CREATE_RESPONSE") {
@@ -146,7 +146,6 @@ class ListFieldComponents extends Component {
           }}
           debug={false}
         />
-
         <div className="container">
           <div className="row">
             <div className="col-md-12">
@@ -176,7 +175,8 @@ class ListFieldComponents extends Component {
                       <Modal show={this.state.show} onHide={this.cancel}>
                         <Form name="form" onSubmit={this.addField}>
                           <Modal.Header closeButton>
-                            <Modal.Title>Add Field</Modal.Title>
+                          {this.state.id == null?<Modal.Title>Add Field</Modal.Title>:<Modal.Title>Edit Field</Modal.Title>}
+
                           </Modal.Header>
                           <Modal.Body className="show-grid">
                             <Container>
@@ -330,24 +330,29 @@ class ListFieldComponents extends Component {
                     ))}
                   </tbody>
                 </table>
+                <div>
+                  <ReactPaginate
+                  breakLabel="..."
+                  nextLabel=">"
+                  onPageChange={(e) => {
+                  this.retrieveTutorials(e.selected)
+                  }}
+                  pageRangeDisplayed={1}
+                  pageCount={this.state.totalCount}
+                  previousLabel="<"
+                  marginPagesDisplayed={2}
+                  renderOnZeroPageCount={null}
+                  containerClassName={"navigationButtons"}
+                  previousLinkClassName={"previousButton"}
+                  nextLinkClassName={"nextButton"}
+                  disabledClassName={"navigationDisabled"}
+                  activeClassName={"navigationActive"}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-        {/*  <ReactPaginate
-         className="pagination"
-          breakLabel="..."
-          nextLabel=">"
-          onPageChange={(e) => {
-            this.setState({ page: e.selected});
-            console.log(e.selected)
-            this.retrieveTutorials()
-          }}
-          pageRangeDisplayed={1}
-          pageCount={this.state.totalCount}
-          previousLabel="<"
-          renderOnZeroPageCount={null}
-        /> */}
       </div>
     )
   }

@@ -84,7 +84,7 @@ class ChangeProfile extends Component {
                                     <label className="myLabel forInput">Phone Number</label>
                                     <input
                                         className="myInput"
-                                        pattern="[+][0-9]{12}"
+                                        pattern="^$|[+][0-9]{12}|[0-9]{11}"
                                         type="text"
                                         value={this.state.phone}
                                         onChange={(e) => { this.setState({ phone: e.target.value }) }
